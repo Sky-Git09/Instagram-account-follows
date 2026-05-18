@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@lens_jibon — Follow &amp; gallery</title>
+  <meta name="description" content="Follow on Instagram, then open photos and videos.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 45%, #fcb045 100%);
+      color: #1a1a1a;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .avatar {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 3px;
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #f3f3f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .handle {
+      margin: 0 0 1.25rem;
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    p.lead {
+      margin: 0 0 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.75rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-instagram {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+    }
+
+    .btn-instagram:hover { opacity: 0.92; }
+
+    .btn-drive {
+      background: #1a73e8;
+      color: #fff;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .btn-drive.is-ready {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .btn-drive.is-ready:hover { opacity: 0.92; }
+
+    .hint {
+      margin: 1rem 0 0;
+      font-size: 0.8rem;
+      color: #888;
+      line-height: 1.4;
+    }
+
+    .step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.35rem;
+      height: 1.35rem;
+      margin-right: 0.35rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .btn-instagram .step { background: rgba(0, 0, 0, 0.2); }
+    .btn-drive .step { background: rgba(255, 255, 255, 0.3); }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="avatar" aria-hidden="true">
+      <div class="avatar-inner">📷</div>
+    </div>
+
+    <h1 id="display-name">Lens Jibon</h1>
+    <p class="handle" id="display-handle">@lens_jibon</p>
+
+    <p class="lead">
+      Follow on Instagram first, then tap below to open the photo &amp; video gallery on Google Drive.
+    </p>
+
+    <a
+      id="btn-follow"
+      class="btn btn-instagram"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="step">1</span> Follow on Instagram
+    </a>
+
+    <a
+      id="btn-drive"
+      class="btn btn-drive"
+      href="https://drive.google.com/drive/folders/YOUR_FOLDER_ID"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="step">2</span> Open photos &amp; videos
+    </a>
+
+    <p class="hint" id="hint">
+      Tap “Follow on Instagram” first — the gallery button unlocks after that.
+    </p>
+  </main>
+
+  <script>
+    // ——— Edit display name, Drive link; Instagram profile is set below ———
+    const CONFIG = {
+      instagramUsername: "lens_jibon",
+      displayName: "Lens Jibon",
+      instagramProfileUrl:
+        "https://www.instagram.com/lens_jibon?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+      googleDriveUrl: "https://drive.google.com/drive/folders/YOUR_FOLDER_ID"
+    };
+
+    const username = CONFIG.instagramUsername.replace(/^@/, "");
+
+    document.getElementById("display-name").textContent = CONFIG.displayName;
+    document.getElementById("display-handle").textContent = "@" + username;
+
+    const btnFollow = document.getElementById("btn-follow");
+    const btnDrive = document.getElementById("btn-drive");
+    const hint = document.getElementById("hint");
+
+    btnFollow.href = CONFIG.instagramProfileUrl;
+    btnDrive.href = CONFIG.googleDriveUrl;
+
+    const STORAGE_KEY = "ig_follow_clicked_" + username;
+
+    function unlockDrive() {
+      btnDrive.classList.add("is-ready");
+      hint.textContent =
+        "Gallery unlocked. You can also go straight to Drive if you already follow.";
+    }
+
+    if (localStorage.getItem(STORAGE_KEY) === "1") {
+      unlockDrive();
+    }
+
+    btnFollow.addEventListener("click", function () {
+      localStorage.setItem(STORAGE_KEY, "1");
+      unlockDrive();
+    });
+
+    btnDrive.addEventListener("click", function (e) {
+      if (!btnDrive.classList.contains("is-ready")) {
+        e.preventDefault();
+        hint.textContent = "Please tap “Follow on Instagram” first.";
+        hint.style.color = "#c62828";
+      }
+    });
+  </script>
+</body>
+</html>
